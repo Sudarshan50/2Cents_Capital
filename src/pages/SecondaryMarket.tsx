@@ -4,7 +4,7 @@ import Navbar from '@/components/navigation/Navbar';
 import FilterableTable from '@/components/tables/FilterableTable';
 import { Button } from '@/components/ui/button';
 
-// Sample data for secondary market
+// Minimal sample data for secondary market
 const secondaryMarketData = [
   {
     id: 1,
@@ -64,146 +64,6 @@ const secondaryMarketData = [
     country: 'Switzerland',
     region: 'Europe',
     sector: 'Automotive',
-    analystConsensus: 'Hold'
-  },
-  {
-    id: 4,
-    product: 'Participation Certificate',
-    underlying: 'NVDA',
-    referenceUnderlying: 'NASDAQ',
-    referenceLevel: 13500.00,
-    reoffer: 98.75,
-    couponType: 'Fixed',
-    coupon: 4.25,
-    couponFrequency: 'Quarterly',
-    strikeDate: '2023-04-05',
-    maturityDate: '2026-04-05',
-    timeToMaturity: '3 years',
-    currency: 'USD',
-    issuer: 'UBS',
-    country: 'Switzerland',
-    region: 'Europe',
-    sector: 'Technology',
-    analystConsensus: 'Buy'
-  },
-  {
-    id: 5,
-    product: 'Credit Linked Note',
-    underlying: 'META',
-    referenceUnderlying: 'S&P 500',
-    referenceLevel: 4150.00,
-    reoffer: 96.80,
-    couponType: 'Fixed',
-    coupon: 6.00,
-    couponFrequency: 'Quarterly',
-    strikeDate: '2023-05-12',
-    maturityDate: '2027-05-12',
-    timeToMaturity: '4 years',
-    currency: 'USD',
-    issuer: 'Deutsche Bank',
-    country: 'Germany',
-    region: 'Europe',
-    sector: 'Communication Services',
-    analystConsensus: 'Buy'
-  },
-  {
-    id: 6,
-    product: 'Autocallable Note',
-    underlying: 'GOOG',
-    referenceUnderlying: 'NASDAQ',
-    referenceLevel: 13700.25,
-    reoffer: 99.00,
-    couponType: 'Conditional',
-    coupon: 5.50,
-    couponFrequency: 'Semi-Annual',
-    strikeDate: '2023-01-25',
-    maturityDate: '2026-01-25',
-    timeToMaturity: '2.5 years',
-    currency: 'USD',
-    issuer: 'Barclays',
-    country: 'UK',
-    region: 'Europe',
-    sector: 'Technology',
-    analystConsensus: 'Buy'
-  },
-  {
-    id: 7,
-    product: 'Reverse Convertible',
-    underlying: 'AMZN',
-    referenceUnderlying: 'S&P 500',
-    referenceLevel: 4225.75,
-    reoffer: 98.25,
-    couponType: 'Fixed',
-    coupon: 5.75,
-    couponFrequency: 'Quarterly',
-    strikeDate: '2023-03-20',
-    maturityDate: '2025-03-20',
-    timeToMaturity: '2 years',
-    currency: 'USD',
-    issuer: 'BNP Paribas',
-    country: 'France',
-    region: 'Europe',
-    sector: 'Consumer Discretionary',
-    analystConsensus: 'Strong Buy'
-  },
-  {
-    id: 8,
-    product: 'Capital Guaranteed Note',
-    underlying: 'BABA',
-    referenceUnderlying: 'Hang Seng',
-    referenceLevel: 20500.00,
-    reoffer: 100.00,
-    couponType: 'Floating',
-    coupon: 3.25,
-    couponFrequency: 'Annual',
-    strikeDate: '2023-02-10',
-    maturityDate: '2028-02-10',
-    timeToMaturity: '5 years',
-    currency: 'USD',
-    issuer: 'HSBC',
-    country: 'UK',
-    region: 'Europe',
-    sector: 'Consumer Discretionary',
-    analystConsensus: 'Hold'
-  },
-  {
-    id: 9,
-    product: 'Participation Certificate',
-    underlying: 'NFLX',
-    referenceUnderlying: 'NASDAQ',
-    referenceLevel: 13550.50,
-    reoffer: 98.50,
-    couponType: 'Conditional',
-    coupon: 4.00,
-    couponFrequency: 'Semi-Annual',
-    strikeDate: '2023-04-15',
-    maturityDate: '2026-04-15',
-    timeToMaturity: '3 years',
-    currency: 'USD',
-    issuer: 'Morgan Stanley',
-    country: 'USA',
-    region: 'North America',
-    sector: 'Communication Services',
-    analystConsensus: 'Buy'
-  },
-  {
-    id: 10,
-    product: 'Credit Linked Note',
-    underlying: 'JNJ',
-    referenceUnderlying: 'S&P 500',
-    referenceLevel: 4175.25,
-    reoffer: 97.00,
-    couponType: 'Fixed',
-    coupon: 5.50,
-    couponFrequency: 'Quarterly',
-    strikeDate: '2023-05-05',
-    maturityDate: '2027-05-05',
-    timeToMaturity: '4 years',
-    currency: 'USD',
-    issuer: 'Societe Generale',
-    country: 'France',
-    region: 'Europe',
-    sector: 'Healthcare',
     analystConsensus: 'Hold'
   }
 ];
@@ -281,7 +141,7 @@ const SecondaryMarket = () => {
           </header>
 
           {/* Category filters */}
-          <div className="filter-bar">
+          <div className="filter-bar mb-6 space-x-2 flex overflow-x-auto pb-2">
             {categories.map(category => (
               <Button
                 key={category}

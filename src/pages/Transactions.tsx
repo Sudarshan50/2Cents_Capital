@@ -3,7 +3,7 @@ import React from 'react';
 import Navbar from '@/components/navigation/Navbar';
 import FilterableTable from '@/components/tables/FilterableTable';
 
-// Sample data for the transactions table
+// Minimal sample data for the transactions table
 const transactionsData = [
   {
     id: 1,
@@ -49,113 +49,6 @@ const transactionsData = [
     marketPrice: 1010.75,
     tradeInfo: [
       { date: '2023-06-18', client: 'DEF Advisors', type: 'Buy', units: 200, notional: 200000, tradePrice: 1000, settlements: 'T+5' }
-    ]
-  },
-  {
-    id: 4,
-    status: 'Completed',
-    description: 'Reverse Convertible Purchase',
-    lastTrade: '2023-05-28',
-    issueDate: '2023-06-05',
-    expiryDate: '2025-06-05',
-    units: 75,
-    issuer: 'UBS',
-    currency: 'USD',
-    marketPrice: 985.50,
-    tradeInfo: [
-      { date: '2023-05-28', client: 'GHI Partners', type: 'Buy', units: 75, notional: 75000, tradePrice: 1000, settlements: 'T+2' }
-    ]
-  },
-  {
-    id: 5,
-    status: 'Completed',
-    description: 'Participation Certificate Sale',
-    lastTrade: '2023-05-20',
-    issueDate: '2023-01-15',
-    expiryDate: '2026-01-15',
-    units: 120,
-    issuer: 'Barclays',
-    currency: 'USD',
-    marketPrice: 1075.25,
-    tradeInfo: [
-      { date: '2023-05-20', client: 'JKL Investments', type: 'Sell', units: 120, notional: 126000, tradePrice: 1050, settlements: 'T+2' },
-      { date: '2023-01-10', client: 'JKL Investments', type: 'Buy', units: 120, notional: 120000, tradePrice: 1000, settlements: 'T+2' }
-    ]
-  },
-  {
-    id: 6,
-    status: 'Failed',
-    description: 'Credit Linked Note Purchase',
-    lastTrade: '2023-05-15',
-    issueDate: '2023-05-20',
-    expiryDate: '2027-05-20',
-    units: 150,
-    issuer: 'Deutsche Bank',
-    currency: 'EUR',
-    marketPrice: 992.75,
-    tradeInfo: [
-      { date: '2023-05-15', client: 'MNO Capital', type: 'Buy', units: 150, notional: 150000, tradePrice: 1000, settlements: 'Failed' }
-    ]
-  },
-  {
-    id: 7,
-    status: 'Completed',
-    description: 'Autocallable Note Purchase',
-    lastTrade: '2023-05-08',
-    issueDate: '2023-05-15',
-    expiryDate: '2025-05-15',
-    units: 80,
-    issuer: 'BNP Paribas',
-    currency: 'USD',
-    marketPrice: 1040.50,
-    tradeInfo: [
-      { date: '2023-05-08', client: 'PQR Advisors', type: 'Buy', units: 80, notional: 80000, tradePrice: 1000, settlements: 'T+2' }
-    ]
-  },
-  {
-    id: 8,
-    status: 'Pending',
-    description: 'Capital Protected Note Purchase',
-    lastTrade: '2023-06-20',
-    issueDate: '2023-06-30',
-    expiryDate: '2028-06-30',
-    units: 100,
-    issuer: 'HSBC',
-    currency: 'GBP',
-    marketPrice: 1005.25,
-    tradeInfo: [
-      { date: '2023-06-20', client: 'STU Investments', type: 'Buy', units: 100, notional: 100000, tradePrice: 1000, settlements: 'Pending' }
-    ]
-  },
-  {
-    id: 9,
-    status: 'Completed',
-    description: 'Reverse Convertible Sale',
-    lastTrade: '2023-04-25',
-    issueDate: '2023-01-05',
-    expiryDate: '2024-01-05',
-    units: 90,
-    issuer: 'Morgan Stanley',
-    currency: 'USD',
-    marketPrice: 1020.75,
-    tradeInfo: [
-      { date: '2023-04-25', client: 'VWX Partners', type: 'Sell', units: 90, notional: 91800, tradePrice: 1020, settlements: 'T+2' },
-      { date: '2023-01-03', client: 'VWX Partners', type: 'Buy', units: 90, notional: 90000, tradePrice: 1000, settlements: 'T+2' }
-    ]
-  },
-  {
-    id: 10,
-    status: 'Completed',
-    description: 'Credit Linked Note Purchase',
-    lastTrade: '2023-04-15',
-    issueDate: '2023-04-22',
-    expiryDate: '2027-04-22',
-    units: 110,
-    issuer: 'Societe Generale',
-    currency: 'EUR',
-    marketPrice: 998.50,
-    tradeInfo: [
-      { date: '2023-04-15', client: 'YZA Capital', type: 'Buy', units: 110, notional: 110000, tradePrice: 1000, settlements: 'T+2' }
     ]
   }
 ];

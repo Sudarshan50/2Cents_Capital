@@ -15,6 +15,7 @@ import Transactions from "./pages/Transactions";
 import Underlying from "./pages/Underlying";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
+import Index from "./pages/Index";
 
 const queryClient = new QueryClient();
 
@@ -28,11 +29,7 @@ const App = () => (
           <Routes>
             <Route path="/login" element={<Login />} />
             
-            <Route path="/" element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            } />
+            <Route path="/" element={<Index />} />
             
             <Route path="/dashboard" element={
               <ProtectedRoute>

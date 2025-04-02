@@ -4,7 +4,7 @@ import Navbar from '@/components/navigation/Navbar';
 import FilterableTable from '@/components/tables/FilterableTable';
 import { ArrowUp, ArrowDown } from 'lucide-react';
 
-// Sample data for the underlying table
+// Minimal sample data for the underlying table
 const underlyingData = [
   {
     id: 1,
@@ -32,69 +32,6 @@ const underlyingData = [
     totalNotional: 80000,
     volatility: 42.5,
     dividendYield: 0.00
-  },
-  {
-    id: 4,
-    name: 'NVIDIA Corp.',
-    spotPrice: 425.70,
-    profit: 2.80,
-    totalNotional: 125000,
-    volatility: 39.8,
-    dividendYield: 0.04
-  },
-  {
-    id: 5,
-    name: 'Meta Platforms Inc.',
-    spotPrice: 287.45,
-    profit: 1.65,
-    totalNotional: 95000,
-    volatility: 28.3,
-    dividendYield: 0.56
-  },
-  {
-    id: 6,
-    name: 'Amazon.com Inc.',
-    spotPrice: 129.33,
-    profit: 0.45,
-    totalNotional: 180000,
-    volatility: 24.5,
-    dividendYield: 0.00
-  },
-  {
-    id: 7,
-    name: 'Alphabet Inc.',
-    spotPrice: 122.17,
-    profit: 0.78,
-    totalNotional: 160000,
-    volatility: 21.3,
-    dividendYield: 0.55
-  },
-  {
-    id: 8,
-    name: 'Johnson & Johnson',
-    spotPrice: 154.41,
-    profit: -0.35,
-    totalNotional: 70000,
-    volatility: 14.2,
-    dividendYield: 3.05
-  },
-  {
-    id: 9,
-    name: 'JPMorgan Chase & Co.',
-    spotPrice: 144.35,
-    profit: 0.28,
-    totalNotional: 85000,
-    volatility: 18.6,
-    dividendYield: 2.78
-  },
-  {
-    id: 10,
-    name: 'Walmart Inc.',
-    spotPrice: 155.33,
-    profit: 0.12,
-    totalNotional: 60000,
-    volatility: 15.1,
-    dividendYield: 1.45
   }
 ];
 
