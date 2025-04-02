@@ -5,6 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
+import logo1 from "@/components/data/logo.png"
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -43,11 +44,11 @@ const Login = () => {
       <div className="w-full max-w-md space-y-8">
         <div>
           <div className="flex justify-center">
-            <div className="h-12 w-12 bg-quant-yellow rounded-lg flex items-center justify-center">
-              <span className="text-quant-navy font-bold text-2xl">Q</span>
+            <div className="h-20 w-20  rounded-lg flex items-center justify-center">
+              <img src={logo1} alt="Logo" className="h-20 w-20 rounded-lg" />
             </div>
           </div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">QuantGlow</h2>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">2CENTSCAPITAL</h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             Sign in to your account
           </p>
@@ -134,13 +135,13 @@ const Login = () => {
                 <div className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Demo credentials</span>
+                <span className="px-2 bg-white text-gray-500">*******************************************</span>
               </div>
             </div>
             
-            <div className="mt-6 text-sm text-center text-gray-500">
+            {/* <div className="mt-6 text-sm text-center text-gray-500">
               <p>For demo purposes, use any email and password (6+ characters)</p>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

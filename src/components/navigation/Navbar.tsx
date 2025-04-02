@@ -5,6 +5,7 @@ import { Bell, LogOut, Menu, User, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import logo1 from "@/components/data/logo.png"
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,7 +18,7 @@ const Navbar = () => {
     { path: '/secondary-market', label: 'Secondary Market' },
     { path: '/transactions', label: 'Transactions' },
     { path: '/underlying', label: 'Underlying' },
-    { path: '/profile', label: 'My Profile' },
+    // { path: '/profile', label: 'My Profile' },
   ];
 
   const toggleMenu = () => {
@@ -36,10 +37,10 @@ const Navbar = () => {
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
               <Link to="/dashboard" className="flex items-center">
-                <div className="h-8 w-8 bg-quant-yellow rounded-md flex items-center justify-center mr-2">
-                  <span className="text-quant-navy font-bold text-xl">Q</span>
+                <div className="h-8 w-8 rounded-md flex items-center justify-center mr-2">
+                  <img src={logo1} alt="Logo" className="h-8 w-8 rounded-md" />
                 </div>
-                <span className="font-bold text-xl text-quant-navy">QuantGlow</span>
+                <span onClick={()=>navigate('/')} className="font-bold text-xl text-quant-navy ">2CENTSCAPITAL</span>
               </Link>
             </div>
             
@@ -49,7 +50,7 @@ const Navbar = () => {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`px-3 py-2 rounded-md text-sm font-medium ${
+                  className={`px-3 mt-2 py-2 rounded-md text-sm font-medium items-center ${
                     location.pathname === item.path
                       ? 'bg-quant-cream text-quant-navy'
                       : 'text-gray-600 hover:bg-gray-50'
@@ -63,9 +64,6 @@ const Navbar = () => {
           
           {/* Right side menu items */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="ghost" size="icon" className="text-gray-600">
-              <Bell size={20} />
-            </Button>
             <Link to="/profile">
               <Button variant="ghost" size="icon" className="text-gray-600">
                 <User size={20} />
