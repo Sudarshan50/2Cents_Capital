@@ -40,7 +40,7 @@ const Navbar = () => {
                 <div className="h-8 w-8 rounded-md flex items-center justify-center mr-2">
                   <img src={logo1} alt="Logo" className="h-8 w-8 rounded-md" />
                 </div>
-                <span onClick={()=>navigate('/')} className="font-bold text-xl text-quant-navy ">2CENTSCAPITAL</span>
+                <span onClick={()=>navigate('/')} className="font-bold text-xl text-quant-navy ">2CENTS CAPITAL</span>
               </Link>
             </div>
             
