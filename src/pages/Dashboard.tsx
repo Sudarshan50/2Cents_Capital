@@ -40,7 +40,7 @@ const Dashboard = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/client/products?ApiKey=${import.meta.env.VITE_API_KEY}`,
+        `/api/client/products?ApiKey=${import.meta.env.VITE_API_KEY}`,
       );
       if (res.status === 200) {
         console.log(res.data);

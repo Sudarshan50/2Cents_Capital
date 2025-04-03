@@ -94,7 +94,7 @@ const Transactions = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/client/transactions?ApiKey=${import.meta.env.VITE_API_KEY}`,
+        `/api/client/transactions?ApiKey=${import.meta.env.VITE_API_KEY}`,
       );
       if (res.status == 200) {
         console.log("Transactions fetched successfully", res.data.products);

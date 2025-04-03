@@ -90,7 +90,7 @@ const CashflowChart: React.FC<CashflowChartProps> = ({
     try {
       setLoading(true);
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/client/cashflows?ApiKey=${import.meta.env.VITE_API_KEY}`,
+        `/api/client/cashflows?ApiKey=${import.meta.env.VITE_API_KEY}`,
       );
       if (res.status === 200) {
         setIsin(res.data[0].isin);
