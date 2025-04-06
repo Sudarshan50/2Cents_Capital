@@ -1,13 +1,15 @@
+
 import React, { useEffect, useState } from "react";
 import Navbar from "@/components/navigation/Navbar";
 import Calendar from "@/components/dashboard/Calendar";
 import CashflowChart from "@/components/charts/CashflowChart";
 import FilterableTable from "@/components/tables/FilterableTable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowUp, ChevronRight } from "lucide-react";
+import { ArrowUp, ChevronRight, FileText, TestTube } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
 import Spinner from "@/components/ui/spinner";
+import { Button } from "@/components/ui/button";
 
 // Calendar events
 const calendarEvents = [
@@ -52,6 +54,17 @@ const Dashboard = () => {
             currency: item.currency,
             marketPrice: item.marketPrice,
             status: item.tradeInfo[0]?.settlementInfo[0]?.status,
+            // Additional fields for expanded view
+            productType: "Autocallable Barrier Note",
+            riskLevel: "Medium-High RISK",
+            riskScore: Math.floor(Math.random() * 30) + 60, // Random score between 60-90
+            positionValue: Math.floor(Math.random() * 500000) + 100000, // Random value
+            var95: Math.floor(Math.random() * 25000) + 10000,
+            varChange: (Math.random() * 5 - 2.5).toFixed(1),
+            barrierDistance: (Math.random() * 30 + 10).toFixed(1),
+            barrierChange: (Math.random() * -3).toFixed(1),
+            autocallProb: (Math.random() * 30 + 60).toFixed(1),
+            autocallChange: (Math.random() * 6).toFixed(1),
           };
         })
         setPod(mapper);
@@ -116,6 +129,84 @@ const Dashboard = () => {
     },
   ];
 
+  // Product details expanded view renderer
+  const renderProductDetails = (product: any) => {
+    return (
+      <div className="p-1">
+        <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5 mb-2">
+          <div className="flex flex-wrap justify-between items-start gap-4">
+            {/* Left side - Risk tag and product name */}
+            <div className="space-y-2">
+              <span className="inline-block px-3 py-1 bg-red-50 text-red-700 font-medium rounded-md">
+                {product.riskLevel}
+              </span>
+              <h3 className="text-xl font-bold text-gray-900">{product.productName}</h3>
+              <p className="text-gray-600">{product.productType}</p>
+              
+              <div className="mt-6">
+                <p className="text-gray-500">Position Value</p>
+                <p className="text-2xl font-bold">${product.positionValue?.toLocaleString()}</p>
+              </div>
+            </div>
+            
+            {/* Right side - Risk metrics */}
+            <div className="flex-grow">
+              <div className="flex justify-between items-center mb-1">
+                <span className="font-medium">Risk Level</span>
+                <span className="text-red-600 font-bold">{product.riskScore}/100</span>
+              </div>
+              
+              {/* Risk progress bar */}
+              <div className="h-2 w-full bg-gray-200 rounded-full mb-6">
+                <div 
+                  className="h-full rounded-full bg-gradient-to-r from-purple-500 via-blue-400 to-cyan-400" 
+                  style={{ width: `${product.riskScore}%` }}
+                ></div>
+              </div>
+              
+              {/* Metrics grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <p className="text-gray-500">VaR (95%)</p>
+                  <p className="text-xl font-bold">${product.var95?.toLocaleString()}</p>
+                  <p className={`text-sm ${product.varChange > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                    {product.varChange > 0 ? '+' : ''}{product.varChange}%
+                  </p>
+                </div>
+                
+                <div>
+                  <p className="text-gray-500">Barrier Distance</p>
+                  <p className="text-xl font-bold">{product.barrierDistance}%</p>
+                  <p className="text-sm text-red-600">
+                    {product.barrierChange}%
+                  </p>
+                </div>
+                
+                <div>
+                  <p className="text-gray-500">Autocall Prob.</p>
+                  <p className="text-xl font-bold">{product.autocallProb}%</p>
+                  <p className="text-sm text-green-600">
+                    +{product.autocallChange}%
+                  </p>
+                </div>
+              </div>
+              
+              {/* Action buttons */}
+              <div className="flex justify-end mt-6 space-x-3">
+                <Button variant="outline" className="flex items-center gap-2">
+                  <FileText size={16} /> Details
+                </Button>
+                <Button variant="outline" className="flex items-center gap-2">
+                  <TestTube size={16} /> Stress Test
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   if(loading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -156,6 +247,7 @@ const Dashboard = () => {
                   <FilterableTable
                     columns={productColumns}
                     data={prod}
+                    expandedRowRender={renderProductDetails}
                   />
                 </CardContent>
               </Card>
