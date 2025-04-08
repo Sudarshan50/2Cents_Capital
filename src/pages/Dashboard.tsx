@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import Navbar from "@/components/navigation/Navbar";
 import Calendar from "@/components/dashboard/Calendar";
@@ -38,47 +37,92 @@ const calendarEvents = [
 const Dashboard = () => {
   const [prod, setPod] = useState([{}]);
   const [loading, setLoading] = useState(false);
+  const [boxLoading,setBoxLoading] = useState(false);
   const fetchProd = async () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `/api/client/products?ApiKey=${import.meta.env.VITE_API_KEY}`,
+        `/api/client/products?ApiKey=${import.meta.env.VITE_API_KEY}`
       );
       if (res.status === 200) {
-        console.log(res.data);
+        // console.log(res.data);
         const mapper = res.data.map((item: any) => {
           return {
             productName: item.isin,
             lastTradeDate: item.strikeDate,
-            units: (item?.units)? item.units : 0,
+            units: item.tradeInfo?.reduce((acc: any, trade: any) => {
+              return acc + trade?.notional / trade?.price;
+            }, 0) || 0,
             currency: item.currency,
             marketPrice: item.marketPrice,
             status: item.tradeInfo[0]?.settlementInfo[0]?.status,
-            // Additional fields for expanded view
-            productType: "Autocallable Barrier Note",
-            riskLevel: "Medium-High RISK",
-            riskScore: Math.floor(Math.random() * 30) + 60, // Random score between 60-90
-            positionValue: Math.floor(Math.random() * 500000) + 100000, // Random value
-            var95: Math.floor(Math.random() * 25000) + 10000,
-            varChange: (Math.random() * 5 - 2.5).toFixed(1),
-            barrierDistance: (Math.random() * 30 + 10).toFixed(1),
-            barrierChange: (Math.random() * -3).toFixed(1),
-            autocallProb: (Math.random() * 30 + 60).toFixed(1),
-            autocallChange: (Math.random() * 6).toFixed(1),
+            strike: item.strike,
+            couponInfo: item.couponInfo?.couponAnnual,
+            portfolio: item.tradeInfo?.reduce((acc: any, trade: any) => {
+              return acc + trade?.notional;
+            }, 0) || 0,
+            tickers: item.basket?.underlyings,
+            productType: item.productType,
+            issueDate: item.issueDate,
+            maturityDate: item.maturityDate,
+            strikeDate: item.strikeDate,
           };
-        })
+        });
+        console.log("mapper", mapper);
         setPod(mapper);
         setLoading(false);
-        console.log("mapper", mapper);
       }
     } catch (err) {
       console.log(err);
       toast.error("Error fetching data");
     }
   };
+
+  const fetchProductAnalytics = async () => {
+    setBoxLoading(true);
+    axios
+      .post("http://localhost:3000/api/var", {
+      tickers: prod[0]?.tickers,
+      strikePrice: prod[0]?.strike,
+      couponNumber: prod[0]?.couponInfo,
+      maturity: Math.floor(
+        (new Date(prod[0]?.maturityDate).getTime() - new Date(prod[0]?.issueDate).getTime()) /
+        (1000 * 60 * 60 * 24 * 30.44) // Use 30.44 to approximate months
+      ),
+      })
+      .then((res) => {
+      if (res.status === 200) {
+        setPod((prevProd) => {
+          const updatedProd = [...prevProd];
+          updatedProd[0] = {
+            ...updatedProd[0],
+            max_var_stock: res.data?.data?.max_var_stock,
+            max_var_value: res.data?.data?.max_var_value,
+            barrier_distance: res.data?.data?.barrier_distance,
+            product_var: res.data?.data?.product_var,
+            current_price: res.data?.data?.current_price,
+          };
+          return updatedProd;
+        });
+        console.log("prod updated");
+        console.log(prod);
+      }
+      })
+      .catch((err) => {
+      console.log(err);
+      toast.error("Error fetching data");
+      })
+      .finally(() => {
+      setBoxLoading(false);
+      });
+  };
   useEffect(() => {
     fetchProd();
   }, []);
+
+  useEffect(() => {
+    console.log("prod", prod);
+  }, [prod]);
   // Column definitions for products table
   const productColumns = [
     {
@@ -132,82 +176,112 @@ const Dashboard = () => {
   // Product details expanded view renderer
   const renderProductDetails = (product: any) => {
     return (
-      <div className="p-1">
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5 mb-2">
-          <div className="flex flex-wrap justify-between items-start gap-4">
-            {/* Left side - Risk tag and product name */}
-            <div className="space-y-2">
-              <span className="inline-block px-3 py-1 bg-red-50 text-red-700 font-medium rounded-md">
-                {product.riskLevel}
-              </span>
-              <h3 className="text-xl font-bold text-gray-900">{product.productName}</h3>
-              <p className="text-gray-600">{product.productType}</p>
-              
-              <div className="mt-6">
-                <p className="text-gray-500">Position Value</p>
-                <p className="text-2xl font-bold">${product.positionValue?.toLocaleString()}</p>
+      <div className="p-1 ">
+        {boxLoading ? (
+          <div className="flex justify-center items-center h-32">
+            <Spinner />
+          </div>
+        ) : (
+          <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5 mb-2">
+          {/* Show underlyings */}
+          <div className="mb-4">
+            <p className="text-gray-500">Underlyings</p>
+            <ul className="list-disc list-inside">
+              {product.tickers?.map((ticker: any, index: number) => (
+                <li key={index} className="text-gray-700">
+                  {ticker?.name}
+                </li>
+              ))}
+            </ul>
+          </div>
+            <div className="flex flex-wrap justify-between items-start gap-4">
+              {/* Left side - Risk tag and product name */}
+              <div className="space-y-2">
+          <span className="inline-block px-3 py-1 bg-red-50 text-red-700 font-medium rounded-md">
+            {product.riskLevel}
+          </span>
+          <h3 className="text-xl font-bold text-gray-900">
+            {product.productName}
+          </h3>
+          <p className="text-gray-600">{product.productType}</p>
+
+          <div className="mt-6">
+            <p className="text-gray-500">Position Value</p>
+            <p className="text-2xl font-bold">
+              ${product.portfolio?.toLocaleString()}
+            </p>
+          </div>
               </div>
+
+              {/* Right side - Risk metrics */}
+              <div className="flex-grow">
+          <div className="flex justify-between items-center mb-1">
+            <span className="font-medium">Risk Level</span>
+            <span className="text-red-600 font-bold">
+              {product.riskScore}/100
+            </span>
+          </div>
+
+          {/* Risk progress bar */}
+          <div className="h-2 w-full bg-gray-200 rounded-full mb-6">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-purple-500 via-blue-400 to-cyan-400"
+              style={{ width: `${product.riskScore}%` }}
+            ></div>
+          </div>
+
+          {/* Metrics grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <p className="text-gray-500">VaR (90%)</p>
+              <p className="text-xl font-bold">
+                {product.product_var?.toLocaleString("en-US", {
+                  style: "decimal",
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+                %
+              </p>
+              <p
+                className={`text-sm ${
+            product.varChange > 0 ? "text-red-600" : "text-green-600"
+                }`}
+              >
+                {product.varChange > 0 ? "+" : ""}
+                {product.varChange}%
+              </p>
             </div>
-            
-            {/* Right side - Risk metrics */}
-            <div className="flex-grow">
-              <div className="flex justify-between items-center mb-1">
-                <span className="font-medium">Risk Level</span>
-                <span className="text-red-600 font-bold">{product.riskScore}/100</span>
-              </div>
-              
-              {/* Risk progress bar */}
-              <div className="h-2 w-full bg-gray-200 rounded-full mb-6">
-                <div 
-                  className="h-full rounded-full bg-gradient-to-r from-purple-500 via-blue-400 to-cyan-400" 
-                  style={{ width: `${product.riskScore}%` }}
-                ></div>
-              </div>
-              
-              {/* Metrics grid */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div>
-                  <p className="text-gray-500">VaR (95%)</p>
-                  <p className="text-xl font-bold">${product.var95?.toLocaleString()}</p>
-                  <p className={`text-sm ${product.varChange > 0 ? 'text-red-600' : 'text-green-600'}`}>
-                    {product.varChange > 0 ? '+' : ''}{product.varChange}%
-                  </p>
-                </div>
-                
-                <div>
-                  <p className="text-gray-500">Barrier Distance</p>
-                  <p className="text-xl font-bold">{product.barrierDistance}%</p>
-                  <p className="text-sm text-red-600">
-                    {product.barrierChange}%
-                  </p>
-                </div>
-                
-                <div>
-                  <p className="text-gray-500">Autocall Prob.</p>
-                  <p className="text-xl font-bold">{product.autocallProb}%</p>
-                  <p className="text-sm text-green-600">
-                    +{product.autocallChange}%
-                  </p>
-                </div>
-              </div>
-              
-              {/* Action buttons */}
-              <div className="flex justify-end mt-6 space-x-3">
-                <Button variant="outline" className="flex items-center gap-2">
-                  <FileText size={16} /> Details
-                </Button>
-                <Button variant="outline" className="flex items-center gap-2">
-                  <TestTube size={16} /> Stress Test
-                </Button>
+            <div>
+              <p className="text-gray-500">Barrier Distance</p>
+              <p className="text-xl font-bold">
+                {product.barrier_distance?.toLocaleString("en-US",{
+                  style: "decimal",
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}%
+              </p>
+              <p className="text-sm text-red-600">
+                {product.barrierChange}%
+              </p>
+            </div>
+
+            <div>
+              <p className="text-gray-500">Autocall Prob.</p>
+              <p className="text-xl font-bold">{product.autocallProb}%</p>
+              <p className="text-sm text-green-600">
+                +{product.autocallChange}%
+              </p>
+            </div>
+          </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     );
   };
 
-  if(loading) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
         <Spinner />
@@ -248,6 +322,7 @@ const Dashboard = () => {
                     columns={productColumns}
                     data={prod}
                     expandedRowRender={renderProductDetails}
+                    onRowClick={fetchProductAnalytics}
                   />
                 </CardContent>
               </Card>
