@@ -4,11 +4,18 @@ import Calendar from "@/components/dashboard/Calendar";
 import CashflowChart from "@/components/charts/CashflowChart";
 import FilterableTable from "@/components/tables/FilterableTable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowUp, ChevronRight, FileText, TestTube } from "lucide-react";
+import { ArrowUp, ChevronRight, ChevronDown, FileText } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
 import Spinner from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // Calendar events
 const calendarEvents = [
@@ -37,7 +44,9 @@ const calendarEvents = [
 const Dashboard = () => {
   const [prod, setPod] = useState([{}]);
   const [loading, setLoading] = useState(false);
-  const [boxLoading,setBoxLoading] = useState(false);
+  const [boxLoading, setBoxLoading] = useState(false);
+  const [varPercentage, setVarPercentage] = useState("90");
+
   const fetchProd = async () => {
     try {
       setLoading(true);
@@ -78,44 +87,46 @@ const Dashboard = () => {
     }
   };
 
-  const fetchProductAnalytics = async () => {
+  const fetchProductAnalytics = async (selectedVar = varPercentage) => {
     setBoxLoading(true);
     axios
       .post("http://localhost:3000/api/var", {
-      tickers: prod[0]?.tickers,
-      strikePrice: prod[0]?.strike,
-      couponNumber: prod[0]?.couponInfo,
-      maturity: Math.floor(
-        (new Date(prod[0]?.maturityDate).getTime() - new Date(prod[0]?.issueDate).getTime()) /
-        (1000 * 60 * 60 * 24 * 30.44) // Use 30.44 to approximate months
-      ),
+        tickers: prod[0]?.tickers,
+        strikePrice: prod[0]?.strike,
+        couponNumber: prod[0]?.couponInfo,
+        varPercentage: selectedVar, // Use the selected percentage
+        maturity: Math.floor(
+          (new Date(prod[0]?.maturityDate).getTime() - new Date(prod[0]?.issueDate).getTime()) /
+          (1000 * 60 * 60 * 24 * 30.44) // Use 30.44 to approximate months
+        ),
       })
       .then((res) => {
-      if (res.status === 200) {
-        setPod((prevProd) => {
-          const updatedProd = [...prevProd];
-          updatedProd[0] = {
-            ...updatedProd[0],
-            max_var_stock: res.data?.data?.max_var_stock,
-            max_var_value: res.data?.data?.max_var_value,
-            barrier_distance: res.data?.data?.barrier_distance,
-            product_var: res.data?.data?.product_var,
-            current_price: res.data?.data?.current_price,
-          };
-          return updatedProd;
-        });
-        console.log("prod updated");
-        console.log(prod);
-      }
+        if (res.status === 200) {
+          setPod((prevProd) => {
+            const updatedProd = [...prevProd];
+            updatedProd[0] = {
+              ...updatedProd[0],
+              max_var_stock: res.data?.data?.max_var_stock,
+              max_var_value: res.data?.data?.max_var_value,
+              barrier_distance: res.data?.data?.barrier_distance,
+              product_var: res.data?.data?.product_var,
+              current_price: res.data?.data?.current_price,
+            };
+            return updatedProd;
+          });
+          console.log("prod updated");
+          console.log(prod);
+        }
       })
       .catch((err) => {
-      console.log(err);
-      toast.error("Error fetching data");
+        console.log(err);
+        toast.error("Error fetching data");
       })
       .finally(() => {
-      setBoxLoading(false);
+        setBoxLoading(false);
       });
   };
+
   useEffect(() => {
     fetchProd();
   }, []);
@@ -123,6 +134,12 @@ const Dashboard = () => {
   useEffect(() => {
     console.log("prod", prod);
   }, [prod]);
+
+  const handleVarPercentageChange = (value: string) => {
+    setVarPercentage(value);
+    fetchProductAnalytics(value);
+  };
+
   // Column definitions for products table
   const productColumns = [
     {
@@ -176,103 +193,133 @@ const Dashboard = () => {
   // Product details expanded view renderer
   const renderProductDetails = (product: any) => {
     return (
-      <div className="p-1 ">
+      <div className="p-1">
         {boxLoading ? (
           <div className="flex justify-center items-center h-32">
             <Spinner />
           </div>
         ) : (
           <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5 mb-2">
-          {/* Show underlyings */}
-          <div className="mb-4">
-            <p className="text-gray-500">Underlyings</p>
-            <ul className="list-disc list-inside">
-              {product.tickers?.map((ticker: any, index: number) => (
-                <li key={index} className="text-gray-700">
-                  {ticker?.name}
-                </li>
-              ))}
-            </ul>
-          </div>
+            {/* Show underlyings */}
+            <div className="mb-4">
+              <p className="text-gray-500 font-medium">Underlyings</p>
+              <ul className="list-disc list-inside mt-2">
+                {product.tickers?.map((ticker: any, index: number) => (
+                  <li key={index} className="text-gray-700">
+                    {ticker?.name} {product.max_var_stock === ticker?.name && (
+                      <span className="text-red-500 font-medium">(Max VAR Stock)</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
             <div className="flex flex-wrap justify-between items-start gap-4">
               {/* Left side - Risk tag and product name */}
               <div className="space-y-2">
-          <span className="inline-block px-3 py-1 bg-red-50 text-red-700 font-medium rounded-md">
-            {product.riskLevel}
-          </span>
-          <h3 className="text-xl font-bold text-gray-900">
-            {product.productName}
-          </h3>
-          <p className="text-gray-600">{product.productType}</p>
+                <span className="inline-block px-3 py-1 bg-red-50 text-red-700 font-medium rounded-md">
+                  {product.riskLevel || "High Risk"}
+                </span>
+                <h3 className="text-xl font-bold text-gray-900">
+                  {product.productName}
+                </h3>
+                <p className="text-gray-600">{product.productType}</p>
 
-          <div className="mt-6">
-            <p className="text-gray-500">Position Value</p>
-            <p className="text-2xl font-bold">
-              ${product.portfolio?.toLocaleString()}
-            </p>
-          </div>
+                <div className="mt-6">
+                  <p className="text-gray-500">Position Value</p>
+                  <p className="text-2xl font-bold">
+                    ${product.portfolio?.toLocaleString()}
+                  </p>
+                </div>
               </div>
 
               {/* Right side - Risk metrics */}
               <div className="flex-grow">
-          <div className="flex justify-between items-center mb-1">
-            <span className="font-medium">Risk Level</span>
-            <span className="text-red-600 font-bold">
-              {product.riskScore}/100
-            </span>
-          </div>
+                <div className="flex justify-between items-center mb-1">
+                  <div className="flex items-center">
+                    <span className="font-medium mr-2">Risk Level</span>
+                    <Select
+                      value={varPercentage}
+                      onValueChange={handleVarPercentageChange}
+                    >
+                      <SelectTrigger className="w-[90px] h-8">
+                        <SelectValue placeholder="VAR %" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="85">VAR 85%</SelectItem>
+                        <SelectItem value="90">VAR 90%</SelectItem>
+                        <SelectItem value="95">VAR 95%</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <span className="text-red-600 font-bold">
+                    {product.riskScore || "75"}/100
+                  </span>
+                </div>
 
-          {/* Risk progress bar */}
-          <div className="h-2 w-full bg-gray-200 rounded-full mb-6">
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-purple-500 via-blue-400 to-cyan-400"
-              style={{ width: `${product.riskScore}%` }}
-            ></div>
-          </div>
+                {/* Risk progress bar */}
+                <div className="h-2 w-full bg-gray-200 rounded-full mb-6">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-purple-500 via-blue-400 to-cyan-400"
+                    style={{ width: `${product.riskScore || 75}%` }}
+                  ></div>
+                </div>
 
-          {/* Metrics grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <p className="text-gray-500">VaR (90%)</p>
-              <p className="text-xl font-bold">
-                {product.product_var?.toLocaleString("en-US", {
-                  style: "decimal",
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-                %
-              </p>
-              <p
-                className={`text-sm ${
-            product.varChange > 0 ? "text-red-600" : "text-green-600"
-                }`}
-              >
-                {product.varChange > 0 ? "+" : ""}
-                {product.varChange}%
-              </p>
-            </div>
-            <div>
-              <p className="text-gray-500">Barrier Distance</p>
-              <p className="text-xl font-bold">
-                {product.barrier_distance?.toLocaleString("en-US",{
-                  style: "decimal",
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}%
-              </p>
-              <p className="text-sm text-red-600">
-                {product.barrierChange}%
-              </p>
-            </div>
+                {/* Metrics grid */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <p className="text-gray-500">VaR ({varPercentage}%)</p>
+                    <p className="text-xl font-bold">
+                      {product.product_var?.toLocaleString("en-US", {
+                        style: "decimal",
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                      %
+                    </p>
+                    <p
+                      className={`text-sm ${
+                        product.varChange > 0 ? "text-red-600" : "text-green-600"
+                      }`}
+                    >
+                      {product.varChange > 0 ? "+" : ""}
+                      {product.varChange || "2.5"}%
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500">Barrier Distance</p>
+                    <p className="text-xl font-bold">
+                      {product.barrier_distance?.toLocaleString("en-US", {
+                        style: "decimal",
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}%
+                    </p>
+                    <p className="text-sm text-red-600">
+                      {product.barrierChange || "-1.2"}%
+                    </p>
+                  </div>
 
-            <div>
-              <p className="text-gray-500">Autocall Prob.</p>
-              <p className="text-xl font-bold">{product.autocallProb}%</p>
-              <p className="text-sm text-green-600">
-                +{product.autocallChange}%
-              </p>
-            </div>
-          </div>
+                  <div>
+                    <p className="text-gray-500">Autocall Prob.</p>
+                    <p className="text-xl font-bold">{product.autocallProb || "65"}%</p>
+                    <p className="text-sm text-green-600">
+                      +{product.autocallChange || "3.2"}%
+                    </p>
+                  </div>
+                </div>
+                
+                {/* Action buttons */}
+                <div className="flex flex-wrap gap-2 mt-6">
+                  <Button variant="outline" className="flex items-center gap-1">
+                    <FileText className="h-4 w-4" />
+                    View Details
+                  </Button>
+                  <Button variant="outline" className="flex items-center gap-1 text-blue-600">
+                    <ChevronDown className="h-4 w-4" />
+                    Download Report
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
