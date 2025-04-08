@@ -8,7 +8,6 @@ import { ArrowUp, ChevronRight, ChevronDown, FileText } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
 import Spinner from "@/components/ui/spinner";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -45,7 +44,7 @@ const Dashboard = () => {
   const [prod, setPod] = useState([{}]);
   const [loading, setLoading] = useState(false);
   const [boxLoading, setBoxLoading] = useState(false);
-  const [varPercentage, setVarPercentage] = useState("90");
+  const [varPercentage, setVarPercentage] = useState("85");
 
   const fetchProd = async () => {
     try {
@@ -86,15 +85,18 @@ const Dashboard = () => {
       toast.error("Error fetching data");
     }
   };
+  useEffect(() => {
+    fetchProductAnalytics();
+  }, [varPercentage]);
 
-  const fetchProductAnalytics = async (selectedVar = varPercentage) => {
+  const fetchProductAnalytics = async () => {
     setBoxLoading(true);
     axios
       .post("http://localhost:3000/api/var", {
         tickers: prod[0]?.tickers,
+        confidence: parseFloat(varPercentage) / 100,
         strikePrice: prod[0]?.strike,
         couponNumber: prod[0]?.couponInfo,
-        varPercentage: selectedVar, // Use the selected percentage
         maturity: Math.floor(
           (new Date(prod[0]?.maturityDate).getTime() - new Date(prod[0]?.issueDate).getTime()) /
           (1000 * 60 * 60 * 24 * 30.44) // Use 30.44 to approximate months
@@ -131,13 +133,12 @@ const Dashboard = () => {
     fetchProd();
   }, []);
 
-  useEffect(() => {
-    console.log("prod", prod);
-  }, [prod]);
+  // useEffect(() => {
+  //   console.log("prod", prod);
+  // }, [prod]);
 
   const handleVarPercentageChange = (value: string) => {
     setVarPercentage(value);
-    fetchProductAnalytics(value);
   };
 
   // Column definitions for products table
@@ -310,7 +311,7 @@ const Dashboard = () => {
                 </div>
                 
                 {/* Action buttons */}
-                <div className="flex flex-wrap gap-2 mt-6">
+                {/* <div className="flex flex-wrap gap-2 mt-6">
                   <Button variant="outline" className="flex items-center gap-1">
                     <FileText className="h-4 w-4" />
                     View Details
@@ -319,7 +320,7 @@ const Dashboard = () => {
                     <ChevronDown className="h-4 w-4" />
                     Download Report
                   </Button>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
