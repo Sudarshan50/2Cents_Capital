@@ -10,13 +10,6 @@ import { toast } from "sonner";
 import axios from "axios";
 import Spinner from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
 
 // Calendar events
 const calendarEvents = [
@@ -45,8 +38,6 @@ const calendarEvents = [
 const Dashboard = () => {
   const [prod, setPod] = useState([{}]);
   const [loading, setLoading] = useState(false);
-  const [varPercentage, setVarPercentage] = useState("95");
-
   const fetchProd = async () => {
     try {
       setLoading(true);
@@ -68,16 +59,12 @@ const Dashboard = () => {
             riskLevel: "Medium-High RISK",
             riskScore: Math.floor(Math.random() * 30) + 60, // Random score between 60-90
             positionValue: Math.floor(Math.random() * 500000) + 100000, // Random value
-            var85: Math.floor(Math.random() * 20000) + 8000,
-            var90: Math.floor(Math.random() * 22000) + 9000,
             var95: Math.floor(Math.random() * 25000) + 10000,
             varChange: (Math.random() * 5 - 2.5).toFixed(1),
             barrierDistance: (Math.random() * 30 + 10).toFixed(1),
             barrierChange: (Math.random() * -3).toFixed(1),
             autocallProb: (Math.random() * 30 + 60).toFixed(1),
             autocallChange: (Math.random() * 6).toFixed(1),
-            underlyingName: ["AAPL", "MSFT", "AMZN", "GOOG"][Math.floor(Math.random() * 4)],
-            maxVarStock: ["AAPL", "TSLA", "NVDA", "MSFT"][Math.floor(Math.random() * 4)],
           };
         })
         setPod(mapper);
@@ -144,15 +131,6 @@ const Dashboard = () => {
 
   // Product details expanded view renderer
   const renderProductDetails = (product: any) => {
-    const getVarValue = () => {
-      switch (varPercentage) {
-        case "85": return product.var85;
-        case "90": return product.var90;
-        case "95": 
-        default: return product.var95;
-      }
-    };
-
     return (
       <div className="p-1">
         <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5 mb-2">
@@ -168,16 +146,6 @@ const Dashboard = () => {
               <div className="mt-6">
                 <p className="text-gray-500">Position Value</p>
                 <p className="text-2xl font-bold">${product.positionValue?.toLocaleString()}</p>
-              </div>
-              
-              <div className="mt-4">
-                <p className="text-gray-500">Underlying</p>
-                <p className="text-md font-semibold">{product.underlyingName}</p>
-              </div>
-              
-              <div className="mt-4">
-                <p className="text-gray-500">Max VAR Stock</p>
-                <p className="text-md font-semibold">{product.maxVarStock}</p>
               </div>
             </div>
             
@@ -199,20 +167,8 @@ const Dashboard = () => {
               {/* Metrics grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <p className="text-gray-500">VAR</p>
-                    <Select value={varPercentage} onValueChange={setVarPercentage}>
-                      <SelectTrigger className="w-20 h-7 text-xs">
-                        <SelectValue placeholder="%" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="85">85%</SelectItem>
-                        <SelectItem value="90">90%</SelectItem>
-                        <SelectItem value="95">95%</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <p className="text-xl font-bold">${getVarValue()?.toLocaleString()}</p>
+                  <p className="text-gray-500">VaR (95%)</p>
+                  <p className="text-xl font-bold">${product.var95?.toLocaleString()}</p>
                   <p className={`text-sm ${product.varChange > 0 ? 'text-red-600' : 'text-green-600'}`}>
                     {product.varChange > 0 ? '+' : ''}{product.varChange}%
                   </p>
