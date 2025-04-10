@@ -58,17 +58,19 @@ const Dashboard = () => {
           return {
             productName: item.isin,
             lastTradeDate: item.strikeDate,
-            units: item.tradeInfo?.reduce((acc: any, trade: any) => {
-              return acc + trade?.notional / trade?.price;
-            }, 0) || 0,
+            units:
+              item.tradeInfo?.reduce((acc: any, trade: any) => {
+                return acc + trade?.notional / trade?.price;
+              }, 0) || 0,
             currency: item.currency,
             marketPrice: item.marketPrice,
             status: item.tradeInfo[0]?.settlementInfo[0]?.status,
             strike: item.strike,
             couponInfo: item.couponInfo?.couponAnnual,
-            portfolio: item.tradeInfo?.reduce((acc: any, trade: any) => {
-              return acc + trade?.notional;
-            }, 0) || 0,
+            portfolio:
+              item.tradeInfo?.reduce((acc: any, trade: any) => {
+                return acc + trade?.notional;
+              }, 0) || 0,
             tickers: item.basket?.underlyings,
             productType: item.productType,
             issueDate: item.issueDate,
@@ -98,12 +100,14 @@ const Dashboard = () => {
         strikePrice: prod[0]?.strike,
         couponNumber: prod[0]?.couponInfo,
         maturity: Math.floor(
-          (new Date(prod[0]?.maturityDate).getTime() - new Date(prod[0]?.issueDate).getTime()) /
-          (1000 * 60 * 60 * 24 * 30.44) // Use 30.44 to approximate months
+          (new Date(prod[0]?.maturityDate).getTime() -
+            new Date(prod[0]?.issueDate).getTime()) /
+            (1000 * 60 * 60 * 24 * 30.44) // Use 30.44 to approximate months
         ),
       })
       .then((res) => {
         if (res.status === 200) {
+          console.log("res", res.data);
           setPod((prevProd) => {
             const updatedProd = [...prevProd];
             updatedProd[0] = {
@@ -113,6 +117,7 @@ const Dashboard = () => {
               barrier_distance: res.data?.data?.barrier_distance,
               product_var: res.data?.data?.product_var,
               current_price: res.data?.data?.current_price,
+              autocallProb: res.data?.data?.mc_prob * 100,
             };
             return updatedProd;
           });
@@ -207,8 +212,11 @@ const Dashboard = () => {
               <ul className="list-disc list-inside mt-2">
                 {product.tickers?.map((ticker: any, index: number) => (
                   <li key={index} className="text-gray-700">
-                    {ticker?.name} {product.max_var_stock === ticker?.name && (
-                      <span className="text-red-500 font-medium">(Max VAR Stock)</span>
+                    {ticker?.name}{" "}
+                    {product.max_var_stock === ticker?.name && (
+                      <span className="text-red-500 font-medium">
+                        (Max VAR Stock)
+                      </span>
                     )}
                   </li>
                 ))}
@@ -280,7 +288,9 @@ const Dashboard = () => {
                     </p>
                     <p
                       className={`text-sm ${
-                        product.varChange > 0 ? "text-red-600" : "text-green-600"
+                        product.varChange > 0
+                          ? "text-red-600"
+                          : "text-green-600"
                       }`}
                     >
                       {product.varChange > 0 ? "+" : ""}
@@ -294,7 +304,8 @@ const Dashboard = () => {
                         style: "decimal",
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
-                      })}%
+                      })}
+                      %
                     </p>
                     <p className="text-sm text-red-600">
                       {product.barrierChange || "-1.2"}%
@@ -303,13 +314,20 @@ const Dashboard = () => {
 
                   <div>
                     <p className="text-gray-500">Autocall Prob.</p>
-                    <p className="text-xl font-bold">{product.autocallProb || "65"}%</p>
+                    <p className="text-xl font-bold">
+                      {product?.autocallProb?.toLocaleString("en-US", {
+                        style: "decimal",
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                      %
+                    </p>
                     <p className="text-sm text-green-600">
                       +{product.autocallChange || "3.2"}%
                     </p>
                   </div>
                 </div>
-                
+
                 {/* Action buttons */}
                 {/* <div className="flex flex-wrap gap-2 mt-6">
                   <Button variant="outline" className="flex items-center gap-1">
