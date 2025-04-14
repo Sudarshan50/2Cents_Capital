@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Bell, LogOut, Menu, User, X } from 'lucide-react';
+import { Bell, LogOut, Menu, User, X, PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -16,6 +16,7 @@ const Navbar = () => {
   const navItems = [
     { path: '/dashboard', label: 'Home' },
     { path: '/secondary-market', label: 'Secondary Market' },
+    { path: '/create-product', label: 'Create Product' },
     { path: '/transactions', label: 'Transactions' },
     { path: '/underlying', label: 'Underlying' },
     // { path: '/profile', label: 'My Profile' },

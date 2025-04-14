@@ -16,6 +16,7 @@ import Underlying from "./pages/Underlying";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import Index from "./pages/Index";
+import CreateProduct from "./pages/CreateProduct";
 
 const queryClient = new QueryClient();
 
@@ -58,6 +59,12 @@ const App = () => (
             <Route path="/profile" element={
               <ProtectedRoute>
                 <Profile />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/create-product" element={
+              <ProtectedRoute>
+                <CreateProduct />
               </ProtectedRoute>
             } />
             
