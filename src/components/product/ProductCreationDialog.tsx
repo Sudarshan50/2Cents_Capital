@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { X } from 'lucide-react';
+import { X, ArrowLeft } from 'lucide-react';
 import ProductCreationForm from './ProductCreationForm';
 import ProductQuote from './ProductQuote';
 
@@ -90,19 +90,44 @@ const ProductCreationDialog: React.FC<ProductCreationDialogProps> = ({ open, onO
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[600px] md:max-w-[900px] p-0 overflow-hidden max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[600px] md:max-w-[900px] p-0 overflow-hidden max-h-[90vh] overflow-y-auto border border-gray-200 shadow-2xl bg-white rounded-xl">
         <div className="relative">
-          <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground z-10">
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </DialogClose>
+          {/* Header with step indicator */}
+          <div className="bg-gradient-to-r from-quant-navy to-[#034275] text-white p-4 md:p-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-bold">
+                {step === 'form' ? 'Create Your Product' : 'Product Preview'}
+              </h2>
+              <DialogClose className="rounded-full hover:bg-white/10 p-2 transition-colors">
+                <X className="h-4 w-4 text-white" />
+                <span className="sr-only">Close</span>
+              </DialogClose>
+            </div>
+            
+            {/* Progress indicator */}
+            <div className="mt-4 flex items-center">
+              <div className={`h-2 w-2 rounded-full ${step === 'form' ? 'bg-quant-yellow' : 'bg-white'}`}></div>
+              <div className={`h-0.5 w-10 ${step === 'form' ? 'bg-gray-400' : 'bg-quant-yellow'}`}></div>
+              <div className={`h-2 w-2 rounded-full ${step === 'quote' ? 'bg-quant-yellow' : 'bg-white'}`}></div>
+            </div>
+          </div>
+          
+          {/* Back button for quote step */}
+          {step === 'quote' && (
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={handleReset} 
+              className="absolute left-4 top-20 flex items-center text-sm text-gray-600 hover:text-gray-800 z-10"
+            >
+              <ArrowLeft className="mr-1 h-3 w-3" />
+              Back to form
+            </Button>
+          )}
           
           <div className="p-6">
             {step === 'form' && (
               <>
-                <h2 className="text-2xl font-bold text-quant-navy mb-6">
-                  Create Your Product
-                </h2>
                 <p className="text-gray-600 mb-8">
                   Answer a few questions to help us suggest the right structured product for your needs.
                 </p>
