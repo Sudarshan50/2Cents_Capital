@@ -46,7 +46,7 @@ const CreateProduct = () => {
           </h1>
           <p className="text-xl mb-10 max-w-3xl mx-auto text-gray-600">
             Create customized structured products that match your investment goals, 
-            risk tolerance, and market outlook with our intuitive product builder.
+            risk tolerance, and market outlook with our intuitive chat interface.
           </p>
           <Button 
             onClick={handleCreateClick}
@@ -88,8 +88,8 @@ const CreateProduct = () => {
               {[
                 { 
                   number: "01", 
-                  title: "Define Parameters", 
-                  description: "Set your investment horizon, risk tolerance, and expected market behavior" 
+                  title: "Chat with our AI", 
+                  description: "Share your investment preferences through our intuitive chat interface" 
                 },
                 { 
                   number: "02", 

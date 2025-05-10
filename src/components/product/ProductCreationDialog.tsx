@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { X, ArrowLeft } from 'lucide-react';
-import ProductCreationForm from './ProductCreationForm';
 import ProductQuote from './ProductQuote';
+import ProductChatForm from './ProductChatForm';
 
 interface ProductCreationDialogProps {
   open: boolean;
@@ -137,10 +137,10 @@ const ProductCreationDialog: React.FC<ProductCreationDialogProps> = ({ open, onO
           <div className="p-6">
             {step === 'form' && (
               <div className="space-y-6">
-                <p className="text-gray-600 text-lg">
-                  Answer a few questions to help us suggest the right structured product for your needs.
+                <p className="text-gray-600 text-lg mb-6">
+                  Let's chat about your investment needs to help us suggest the right structured product for you.
                 </p>
-                <ProductCreationForm onSubmit={handleFormSubmit} />
+                <ProductChatForm onSubmit={handleFormSubmit} />
               </div>
             )}
             
