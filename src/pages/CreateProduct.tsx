@@ -65,10 +65,10 @@ const CreateProduct = () => {
               {features.map((feature, index) => (
                 <Card 
                   key={index} 
-                  className="border border-gray-100 bg-white hover:shadow-lg transition-all duration-300 overflow-hidden"
+                  className="border border-gray-100 bg-white hover:shadow-lg transition-all duration-300 overflow-hidden hover:border-quant-yellow/30 group"
                 >
                   <CardContent className="p-6 flex flex-col h-full">
-                    <div className="bg-quant-yellow/10 p-3 rounded-md w-fit mb-4">
+                    <div className="bg-quant-yellow/10 p-3 rounded-md w-fit mb-4 group-hover:bg-quant-yellow/20 transition-all">
                       {feature.icon}
                     </div>
                     <h3 className="text-xl font-medium mb-3 text-gray-900">{feature.title}</h3>

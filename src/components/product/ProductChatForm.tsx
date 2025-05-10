@@ -177,19 +177,25 @@ const ProductChatForm: React.FC<ProductChatFormProps> = ({ onSubmit }) => {
   };
 
   return (
-    <div className="flex flex-col h-full max-h-[60vh]">
+    <div className="flex flex-col h-full max-h-[60vh] rounded-lg border border-gray-100 overflow-hidden shadow-sm">
+      {/* Chat header */}
+      <div className="bg-quant-yellow/20 py-3 px-4 border-b border-gray-100">
+        <h3 className="font-medium text-quant-navy">Investment AI Assistant</h3>
+        <p className="text-xs text-gray-600">Let's build your custom investment product</p>
+      </div>
+      
       {/* Chat messages area */}
-      <div className="flex-grow overflow-y-auto px-2 py-4 space-y-4">
+      <div className="flex-grow overflow-y-auto px-4 py-5 space-y-5 bg-gray-50/50">
         {messages.map((message, index) => (
-          <div key={index} className={`flex ${message.sender === 'bot' ? 'justify-start' : 'justify-end'}`}>
+          <div key={index} className={`flex ${message.sender === 'bot' ? 'justify-start' : 'justify-end'} animate-fade-in`}>
             <div 
-              className={`rounded-xl px-4 py-3 max-w-[80%] ${
+              className={`rounded-2xl px-4 py-3 max-w-[85%] shadow-sm ${
                 message.sender === 'bot' 
-                  ? 'bg-gray-100 text-gray-900' 
-                  : 'bg-quant-yellow text-quant-navy'
+                  ? 'bg-white text-gray-900 rounded-bl-none' 
+                  : 'bg-quant-yellow text-quant-navy rounded-br-none'
               }`}
             >
-              <p className="text-sm">{message.text}</p>
+              <p className="text-sm leading-relaxed">{message.text}</p>
               
               {/* Render options if this is a question with options */}
               {message.isOptionQuestion && message.options && message.sender === 'bot' && (
@@ -198,11 +204,11 @@ const ProductChatForm: React.FC<ProductChatFormProps> = ({ onSubmit }) => {
                     <button
                       key={option.value}
                       onClick={() => handleOptionSelect(option.value, message.questionKey as keyof ProductFormData)}
-                      className="w-full text-left px-3 py-2 rounded-md bg-white border border-gray-200 hover:bg-gray-50 transition-colors text-sm"
+                      className="w-full text-left px-3 py-2.5 rounded-xl bg-white border border-gray-200 hover:bg-gray-50 hover:border-quant-yellow/50 transition-all text-sm group shadow-sm hover:shadow"
                     >
-                      <div className="font-medium">{option.label}</div>
+                      <div className="font-medium group-hover:text-quant-navy">{option.label}</div>
                       {option.description && (
-                        <div className="text-xs text-gray-500 mt-0.5">{option.description}</div>
+                        <div className="text-xs text-gray-500 mt-1">{option.description}</div>
                       )}
                     </button>
                   ))}
@@ -216,12 +222,12 @@ const ProductChatForm: React.FC<ProductChatFormProps> = ({ onSubmit }) => {
                     value={formData.underlying} 
                     onValueChange={handleUnderlyingChange}
                   >
-                    <SelectTrigger className="w-full bg-white">
+                    <SelectTrigger className="w-full bg-white border-gray-200 hover:border-quant-yellow/70 transition-colors">
                       <SelectValue placeholder="Select an underlying asset" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-h-[280px]">
                       {underlyingOptions.map((option) => (
-                        <SelectItem key={option} value={option}>
+                        <SelectItem key={option} value={option} className="cursor-pointer">
                           {option}
                         </SelectItem>
                       ))}
@@ -237,15 +243,15 @@ const ProductChatForm: React.FC<ProductChatFormProps> = ({ onSubmit }) => {
       </div>
       
       {/* Chat input area - shown after all questions are answered */}
-      {currentQuestionIndex === questions.length && (
-        <div className="p-2 border-t border-gray-200">
+      {currentQuestionIndex >= questions.length - 1 && formData.underlying !== '' && (
+        <div className="p-3 border-t border-gray-200 bg-white">
           <Button 
             onClick={handleSubmitForm}
-            className="w-full bg-quant-yellow text-quant-navy hover:bg-quant-yellow/90 py-6"
+            className="w-full bg-quant-yellow text-quant-navy hover:bg-quant-yellow/90 py-5 rounded-xl shadow-md hover:shadow-lg transition-all"
             size="lg"
           >
-            <span>Get Quote</span>
-            <ArrowRight size={16} />
+            <span className="font-medium">Get Product Quote</span>
+            <ArrowRight className="ml-2" />
           </Button>
         </div>
       )}

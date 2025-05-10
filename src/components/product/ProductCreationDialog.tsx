@@ -93,28 +93,28 @@ const ProductCreationDialog: React.FC<ProductCreationDialogProps> = ({ open, onO
       <DialogContent className="sm:max-w-[600px] md:max-w-[900px] p-0 overflow-hidden max-h-[90vh] overflow-y-auto border border-gray-200 shadow-2xl bg-white rounded-xl">
         <div className="relative">
           {/* Header with step indicator */}
-          <div className="bg-white border-b border-gray-100 p-4 md:p-6 sticky top-0 z-10">
+          <div className="bg-quant-yellow/10 border-b border-gray-100 p-4 md:p-6 sticky top-0 z-10">
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-bold text-gray-900">
                 {step === 'form' ? 'Create Your Product' : 'Product Preview'}
               </h2>
-              <DialogClose className="rounded-full hover:bg-gray-100 p-2 transition-colors">
-                <X className="h-4 w-4 text-gray-500" />
+              <DialogClose className="rounded-full hover:bg-white/60 p-2 transition-colors">
+                <X className="h-5 w-5 text-gray-600" />
                 <span className="sr-only">Close</span>
               </DialogClose>
             </div>
             
             {/* Progress steps */}
-            <div className="mt-4 flex items-center gap-3">
+            <div className="mt-5 flex items-center gap-3">
               <div className="flex-1">
                 <div className={`h-2 rounded-full ${step === 'form' ? 'bg-quant-yellow' : 'bg-gray-200'}`}></div>
-                <p className={`text-xs mt-1 ${step === 'form' ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>
+                <p className={`text-xs mt-1.5 ${step === 'form' ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>
                   Product Details
                 </p>
               </div>
               <div className="flex-1">
                 <div className={`h-2 rounded-full ${step === 'quote' ? 'bg-quant-yellow' : 'bg-gray-200'}`}></div>
-                <p className={`text-xs mt-1 ${step === 'quote' ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>
+                <p className={`text-xs mt-1.5 ${step === 'quote' ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>
                   Product Preview
                 </p>
               </div>
